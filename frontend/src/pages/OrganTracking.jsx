@@ -120,9 +120,9 @@ export default function OrganTracking() {
         </p>
       </div>
 
-      <div className="grid grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Left — Application List */}
-        <div className="col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-gray-100">
             <h3 className="font-semibold text-gray-800 text-sm">Approved Allocations</h3>
             <p className="text-xs text-gray-400 mt-0.5">{applications.length} active · click to track</p>
@@ -160,7 +160,7 @@ export default function OrganTracking() {
         </div>
 
         {/* Right — Tracking Detail */}
-        <div className="col-span-3">
+        <div className="lg:col-span-3">
           {!selected ? (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col items-center justify-center py-24 text-gray-400">
               <div className="text-5xl mb-4">🫀</div>
@@ -186,7 +186,7 @@ export default function OrganTracking() {
               {/* Patient + Organ Info */}
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
                 <div className="font-semibold text-gray-900 mb-3">{selected.organRequestId?.patientName || "—"}</div>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {[
                     ["Organ",         selected.organListingId?.organType],
                     ["Blood Group",   selected.organRequestId?.bloodGroup],
@@ -212,7 +212,8 @@ export default function OrganTracking() {
               {/* Journey Progress */}
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
                 <h4 className="font-semibold text-gray-700 text-sm mb-5">Organ Journey</h4>
-                <div className="flex items-center">
+                {/* Desktop journey bar */}
+                <div className="hidden sm:flex items-center">
                   {STAGES.map((stage, i) => {
                     const idx = currentStageIdx(selected);
                     const done = i <= idx;
@@ -237,6 +238,30 @@ export default function OrganTracking() {
                         {i < STAGES.length - 1 && (
                           <div className={`h-0.5 flex-1 mx-1 mb-6 ${i < idx ? "bg-emerald-400" : "bg-gray-200"}`}></div>
                         )}
+                      </div>
+                    );
+                  })}
+                </div>
+                {/* Mobile journey list */}
+                <div className="flex flex-col gap-2 sm:hidden">
+                  {STAGES.map((stage, i) => {
+                    const idx = currentStageIdx(selected);
+                    const done = i <= idx;
+                    const active = i === idx;
+                    const cfg = STAGE_CONFIG[stage];
+                    return (
+                      <div key={stage} className={`flex items-center gap-3 px-3 py-2 rounded-lg border ${
+                        active ? `${cfg.bg} ${cfg.border}` : done ? "bg-gray-50 border-gray-200" : "bg-white border-gray-100"
+                      }`}>
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs border-2 flex-shrink-0 ${
+                          done ? `${cfg.color} border-transparent text-white` : "bg-white border-gray-200 text-gray-300"
+                        }`}>
+                          {done && i < idx ? (
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                          ) : i + 1}
+                        </div>
+                        <span className={`text-sm font-medium ${done ? cfg.text : "text-gray-300"}`}>{cfg.label}</span>
+                        {active && <span className="ml-auto text-xs font-semibold text-emerald-600">Current</span>}
                       </div>
                     );
                   })}
