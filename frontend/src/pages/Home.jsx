@@ -42,7 +42,7 @@ export default function Home() {
       </div>
 
       {/* Flow Steps */}
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {[
           { step: "1", title: "Hospital Posts Organ",  desc: "With donor medical report PDF" },
           { step: "2", title: "Recipients Notified",   desc: "Real-time emergency notification" },
@@ -62,7 +62,7 @@ export default function Home() {
       {user && cards.length > 0 && (
         <div>
           <h2 className="text-sm font-semibold text-gray-700 mb-3">Quick Actions</h2>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {cards.map((c) => (
               <Link key={c.title} to={c.to} className="card hover:border-emerald-300 hover:shadow-md transition-all group">
                 <div className="font-semibold text-gray-800 mb-1 group-hover:text-emerald-700 transition-colors text-sm">{c.title}</div>

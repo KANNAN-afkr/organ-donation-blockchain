@@ -64,7 +64,7 @@ export default function HospitalDashboard() {
           {!showRegister ? (
             <button onClick={() => setShowRegister(true)} className="btn-primary text-sm">Register Hospital Profile</button>
           ) : (
-            <form onSubmit={registerHospital} className="grid grid-cols-2 gap-4 mt-4">
+            <form onSubmit={registerHospital} className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
               <div>
                 <label className="form-label">Hospital Name</label>
                 <input value={hForm.name} onChange={(e) => setHForm({ ...hForm, name: e.target.value })}
@@ -110,7 +110,7 @@ export default function HospitalDashboard() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s) => (
           <div key={s.label} className={`bg-white rounded-xl border border-gray-200 border-l-4 ${s.color} p-5 shadow-sm`}>
             <div className="text-2xl font-bold text-gray-900">{s.value}</div>
@@ -120,7 +120,7 @@ export default function HospitalDashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">
+      <div className="flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg">
         {[
           { key: "listings",     label: `My Organ Listings (${myListings.length})` },
           { key: "requests",     label: `My Patient Requests (${myRequests.length})` },
@@ -181,7 +181,7 @@ export default function HospitalDashboard() {
                         }`}>{app.organStatus}</span>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-3 mb-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
                         {[
                           ["Patient Name",        app.organRequestId?.patientName],
                           ["Blood Group",         app.organRequestId?.bloodGroup],

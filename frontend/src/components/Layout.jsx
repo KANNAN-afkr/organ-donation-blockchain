@@ -139,20 +139,21 @@ export default function Layout() {
       </aside>
 
       {/* Main */}
-      <main className="flex-1 overflow-y-auto flex flex-col lg:ml-0">
+      <main className="flex-1 overflow-y-auto flex flex-col min-w-0">
         <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
           {/* Hamburger for mobile */}
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 mr-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
           <div>
-            <div className="text-sm font-semibold text-gray-800">Organ Donation & Transplantation Management</div>
-            <div className="text-xs text-gray-400 mt-0.5">Blockchain-Powered Hospital Network</div>
+            <div className="text-sm font-semibold text-gray-800 hidden sm:block">Organ Donation & Transplantation Management</div>
+            <div className="text-sm font-semibold text-gray-800 sm:hidden">OrganChain</div>
+            <div className="text-xs text-gray-400 mt-0.5 hidden sm:block">Blockchain-Powered Hospital Network</div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
+          <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
               <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
-              <span className="text-xs text-gray-500 font-medium">Hardhat · Port 8545</span>
+              <span className="text-xs text-gray-500 font-medium">Sepolia Testnet</span>
             </div>
             {/* Notification Bell */}
             {user && (
@@ -192,7 +193,7 @@ export default function Layout() {
             {user && <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-700">{roleLabel.toUpperCase()}</span>}
           </div>
         </header>
-        <div className="flex-1 p-6 bg-gray-50/80">
+        <div className="flex-1 p-3 sm:p-6 bg-gray-50/80">
           <Outlet />
         </div>
       </main>
