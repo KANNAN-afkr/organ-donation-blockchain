@@ -6,3 +6,8 @@ blockchain/node_modules/
 frontend/.env
 backend/.env
 blockchain/.env
+*.pdf
+README.md
+VIVA_CONCEPTS.txt
+ENHANCEMENTS.md
+../Report/
