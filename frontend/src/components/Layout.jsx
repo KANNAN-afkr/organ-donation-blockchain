@@ -44,6 +44,7 @@ export default function Layout() {
   const { notifications, unreadCount, markRead, clearAll } = useSocket();
   const navigate = useNavigate();
   const [showNotif, setShowNotif] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => { logout(); disconnectWallet(); navigate("/login"); };
 
@@ -52,7 +53,13 @@ export default function Layout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
-      <aside className="w-64 flex-shrink-0 bg-gray-900 flex flex-col border-r border-white/5">
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 bg-black/50 z-20 lg:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
+      <aside className={`fixed lg:static inset-y-0 left-0 z-30 w-64 flex-shrink-0 bg-gray-900 flex flex-col border-r border-white/5 transform transition-transform duration-200 ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      }`}>
         {/* Logo */}
         <div className="px-5 py-4 border-b border-white/10">
           <div className="flex items-center gap-2.5">
@@ -89,6 +96,7 @@ export default function Layout() {
           <div className="space-y-0.5">
             {NAV.map((link) => (
               <NavLink key={link.to} to={link.to}
+                onClick={() => setSidebarOpen(false)}
                 className={({ isActive }) =>
                   `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive
@@ -131,8 +139,12 @@ export default function Layout() {
       </aside>
 
       {/* Main */}
-      <main className="flex-1 overflow-y-auto flex flex-col">
-        <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+      <main className="flex-1 overflow-y-auto flex flex-col lg:ml-0">
+        <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
+          {/* Hamburger for mobile */}
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 mr-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
           <div>
             <div className="text-sm font-semibold text-gray-800">Organ Donation & Transplantation Management</div>
             <div className="text-xs text-gray-400 mt-0.5">Blockchain-Powered Hospital Network</div>
