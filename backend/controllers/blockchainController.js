@@ -17,7 +17,7 @@ exports.getTransactions = async (req, res) => {
     const contract = new ethers.Contract(deployment.address, deployment.abi, provider);
 
     const currentBlock = await provider.getBlockNumber();
-    const fromBlock = 0; // Always fetch from genesis to catch all events
+    const fromBlock = deployment.deployedAtBlock || (currentBlock - 499);
 
     // Fetch all event types in parallel
     const [donorEvents, recipientEvents, allocationEvents, statusEvents, transplantEvents, hospitalAllocEvents, hospitalStatusEvents, organListedEvents] =

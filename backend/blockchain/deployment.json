@@ -1043,5 +1043,6 @@
     }
   ],
   "network": "sepolia",
-  "deployedAt": "2026-06-20T16:52:49.169Z"
+  "deployedAt": "2026-06-20T16:52:49.169Z",
+  "deployedAtBlock": 11096000
 }
