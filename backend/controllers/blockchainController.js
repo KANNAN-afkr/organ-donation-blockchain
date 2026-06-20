@@ -17,20 +17,28 @@ exports.getTransactions = async (req, res) => {
     const contract = new ethers.Contract(deployment.address, deployment.abi, provider);
 
     const currentBlock = await provider.getBlockNumber();
-    const fromBlock = deployment.deployedAtBlock || (currentBlock - 499);
+    const CHUNK = 9;
+    const deployBlock = deployment.deployedAtBlock || (currentBlock - CHUNK);
 
-    // Fetch all event types in parallel
-    const [donorEvents, recipientEvents, allocationEvents, statusEvents, transplantEvents, hospitalAllocEvents, hospitalStatusEvents, organListedEvents] =
-      await Promise.all([
-        contract.queryFilter(contract.filters.DonorRegistered(), fromBlock),
-        contract.queryFilter(contract.filters.RecipientRegistered(), fromBlock),
-        contract.queryFilter(contract.filters.OrganAllocated(), fromBlock),
-        contract.queryFilter(contract.filters.OrganStatusUpdated(), fromBlock),
-        contract.queryFilter(contract.filters.TransplantCompleted(), fromBlock),
-        contract.queryFilter(contract.filters.HospitalOrganAllocated(), fromBlock),
-        contract.queryFilter(contract.filters.HospitalOrganStatusUpdated(), fromBlock),
-        contract.queryFilter(contract.filters.OrganListed(), fromBlock),
-      ]);
+    // Fetch in chunks of 9 blocks
+    const allEvents = [];
+    for (let from = deployBlock; from <= currentBlock; from += CHUNK) {
+      const to = Math.min(from + CHUNK - 1, currentBlock);
+      try {
+        const [donorEvents, recipientEvents, allocationEvents, statusEvents, transplantEvents, hospitalAllocEvents, hospitalStatusEvents, organListedEvents] =
+          await Promise.all([
+            contract.queryFilter(contract.filters.DonorRegistered(), from, to),
+            contract.queryFilter(contract.filters.RecipientRegistered(), from, to),
+            contract.queryFilter(contract.filters.OrganAllocated(), from, to),
+            contract.queryFilter(contract.filters.OrganStatusUpdated(), from, to),
+            contract.queryFilter(contract.filters.TransplantCompleted(), from, to),
+            contract.queryFilter(contract.filters.HospitalOrganAllocated(), from, to),
+            contract.queryFilter(contract.filters.HospitalOrganStatusUpdated(), from, to),
+            contract.queryFilter(contract.filters.OrganListed(), from, to),
+          ]);
+        allEvents.push(donorEvents, recipientEvents, allocationEvents, statusEvents, transplantEvents, hospitalAllocEvents, hospitalStatusEvents, organListedEvents);
+      } catch (e) { continue; }
+    }
 
     const format = (events, type) =>
       events.map((e) => ({
@@ -43,16 +51,15 @@ exports.getTransactions = async (req, res) => {
         ),
       }));
 
-    const all = [
-      ...format(donorEvents, "DonorRegistered"),
-      ...format(recipientEvents, "RecipientRegistered"),
-      ...format(allocationEvents, "OrganAllocated"),
-      ...format(statusEvents, "OrganStatusUpdated"),
-      ...format(transplantEvents, "TransplantCompleted"),
-      ...format(hospitalAllocEvents, "HospitalOrganAllocated"),
-      ...format(hospitalStatusEvents, "HospitalOrganStatusUpdated"),
-      ...format(organListedEvents, "OrganListed"),
-    ].sort((a, b) => b.blockNumber - a.blockNumber);
+    const all = allEvents.flat().map((e) => ({
+        type: e.fragment?.name || "Unknown",
+        txHash: e.transactionHash,
+        blockNumber: e.blockNumber,
+        timestamp: Number(e.args[e.args.length - 1]) * 1000,
+        args: Object.fromEntries(
+          e.fragment.inputs.map((inp, i) => [inp.name, e.args[i]?.toString()])
+        ),
+      })).sort((a, b) => b.blockNumber - a.blockNumber);
 
     res.json(all);
   } catch (err) {
