@@ -44,8 +44,9 @@ export default function PostOrganRequest() {
         <p className="text-xs text-blue-700">Once posted, all registered hospitals will receive a real-time notification about this organ request. Attach the patient's complete medical report for AI-assisted matching.</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 max-w-3xl">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 max-w-3xl">
         <form onSubmit={handleSubmit} className="space-y-6">
+
           {/* Patient Details */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -53,6 +54,8 @@ export default function PostOrganRequest() {
               <span className="text-sm font-semibold text-gray-700">Patient Details</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="form-label">Patient Name</label>
                 <input value={form.patientName} onChange={(e) => setForm({...form, patientName: e.target.value})}
                   required placeholder="John Doe" className="form-input" />
               </div>
@@ -92,6 +95,8 @@ export default function PostOrganRequest() {
               <span className="text-sm font-semibold text-gray-700">Medical Need</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="form-label">Organ Needed</label>
                 <select value={form.organNeeded} onChange={(e) => setForm({...form, organNeeded: e.target.value})} className="form-input">
                   {ORGANS.map((o) => <option key={o}>{o}</option>)}
                 </select>
@@ -104,7 +109,7 @@ export default function PostOrganRequest() {
                   ))}
                 </select>
               </div>
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <label className="form-label">Medical Diagnosis</label>
                 <textarea value={form.diagnosis} onChange={(e) => setForm({...form, diagnosis: e.target.value})}
                   required rows={3} placeholder="Describe patient's condition and why they need this organ..."
