@@ -101,7 +101,7 @@ export default function RecipientDetails() {
     );
 
     return (
-      <div className="space-y-6 max-w-4xl">
+      <div className="space-y-6 max-w-full">
         <button onClick={() => { setSelected(null); setAiInsights(null); }}
           className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,16 +111,16 @@ export default function RecipientDetails() {
         </button>
 
         {/* Patient Info */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-          <div className="flex items-start justify-between mb-5">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-5">
             <div>
               <h2 className="text-lg font-bold text-gray-900">{req.patientName}</h2>
-              <div className="flex items-center gap-3 mt-1">
+              <div className="flex flex-wrap items-center gap-2 mt-1">
                 <StatusBadge status={req.urgencyLevel} />
                 <span className="text-xs text-gray-400">Posted {new Date(req.createdAt).toLocaleDateString()}</span>
               </div>
             </div>
-            <span className="bg-blue-50 text-blue-700 border border-blue-200 text-sm font-semibold px-3 py-1 rounded-lg">
+            <span className="bg-blue-50 text-blue-700 border border-blue-200 text-sm font-semibold px-3 py-1 rounded-lg self-start">
               Needs: {req.organNeeded}
             </span>
           </div>
@@ -344,9 +344,9 @@ export default function RecipientDetails() {
             );
             return (
               <button key={req._id} onClick={() => { setSelected(req); setAiInsights(null); }}
-                className="w-full px-6 py-4 text-left hover:bg-gray-50 transition-colors group">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
+                className="w-full px-4 sm:px-6 py-4 text-left hover:bg-gray-50 transition-colors group">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
                       <span className="font-semibold text-gray-900">{req.patientName}</span>
                       <StatusBadge status={req.urgencyLevel} />
@@ -373,9 +373,9 @@ export default function RecipientDetails() {
                       <span>From: <span className="font-medium text-gray-700">{req.hospitalId?.name}</span></span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 ml-4 flex-shrink-0">
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     {req.reportFileId && (
-                      <span className="text-xs bg-blue-50 text-blue-600 border border-blue-100 px-2 py-1 rounded-md">Report Available</span>
+                      <span className="hidden sm:inline text-xs bg-blue-50 text-blue-600 border border-blue-100 px-2 py-1 rounded-md">Report</span>
                     )}
                     <svg className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
