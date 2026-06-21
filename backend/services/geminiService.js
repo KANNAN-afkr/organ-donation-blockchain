@@ -31,25 +31,40 @@ async function analyzeMedicalReports(organListing, recipient) {
   try {
     let organReportText = "";
     let recipientReportText = "";
+    let organReportStatus = "not_provided";
+    let recipientReportStatus = "not_provided";
 
     if (organListing.reportFileId) {
-      try { organReportText = await getPDFText(organListing.reportFileId); } catch (e) { console.warn("[Groq] Organ PDF read failed:", e.message); }
+      try {
+        organReportText = await getPDFText(organListing.reportFileId);
+        organReportStatus = organReportText.length > 100 ? "readable" : "unreadable";
+      } catch (e) {
+        organReportStatus = "failed";
+        console.warn("[Groq] Organ PDF read failed:", e.message);
+      }
     }
     if (recipient.reportFileId) {
-      try { recipientReportText = await getPDFText(recipient.reportFileId); } catch (e) { console.warn("[Groq] Recipient PDF read failed:", e.message); }
+      try {
+        recipientReportText = await getPDFText(recipient.reportFileId);
+        recipientReportStatus = recipientReportText.length > 100 ? "readable" : "unreadable";
+      } catch (e) {
+        recipientReportStatus = "failed";
+        console.warn("[Groq] Recipient PDF read failed:", e.message);
+      }
     }
 
     const prompt = `You are a senior transplant surgeon and medical AI analyzing organ compatibility for a life-critical transplant decision.
 
-AVAILABLE ORGAN DETAILS:
+AVAILABLE ORGAN DETAILS (from system records):
 - Organ Type: ${organListing.organType}
 - Blood Group: ${organListing.bloodGroup}
 - Donor Age: ${organListing.donorAge}
 - Donor Gender: ${organListing.donorGender}
 - Medical Condition: ${organListing.medicalCondition}
 - Additional Notes: ${organListing.additionalNotes || "None"}
+- Donor Report Status: ${organReportStatus === "readable" ? "PDF provided and readable" : organReportStatus === "unreadable" ? "PDF provided but content could not be extracted — may not be a medical report" : "No PDF provided"}
 
-RECIPIENT DETAILS:
+RECIPIENT DETAILS (from system records):
 - Name: ${recipient.patientName || recipient.name || "Unknown"}
 - Age: ${recipient.patientAge || recipient.age || "Unknown"}
 - Gender: ${recipient.patientGender || recipient.gender || "Unknown"}
@@ -58,22 +73,31 @@ RECIPIENT DETAILS:
 - Urgency Level: ${recipient.urgencyLevel}
 - Diagnosis: ${recipient.diagnosis}
 - Hospital: ${recipient.hospitalName || ""}
+- Recipient Report Status: ${recipientReportStatus === "readable" ? "PDF provided and readable" : recipientReportStatus === "unreadable" ? "PDF provided but content could not be extracted — may not be a medical report" : "No PDF provided"}
 
 ${organReportText ? `DONOR MEDICAL REPORT (extracted text):\n${organReportText}\n` : ""}
 ${recipientReportText ? `RECIPIENT MEDICAL REPORT (extracted text):\n${recipientReportText}\n` : ""}
+
+IMPORTANT INSTRUCTIONS:
+- If a PDF was provided but unreadable or doesn't appear to be a medical report, clearly mention this in your analysis
+- If report text looks like a non-medical document (random text, invoices, images etc), flag it as "Invalid document — not a medical report"
+- Base your analysis primarily on the system record details provided above
+- Be honest about what data you have and what is missing
 
 Analyze thoroughly and respond with ONLY this JSON, no markdown, no extra text:
 {
   "matchScore": <number 0-100>,
   "bloodCompatibility": "<detailed blood group compatibility explanation>",
   "organCompatibility": "<detailed organ type and size compatibility>",
+  "donorReportStatus": "<Valid Medical Report | Invalid Document | Not Provided | Could Not Read>",
+  "recipientReportStatus": "<Valid Medical Report | Invalid Document | Not Provided | Could Not Read>",
   "donorProfile": {
     "age": "<extracted or provided>",
     "gender": "<extracted or provided>",
     "bloodGroup": "<extracted or provided>",
-    "organCondition": "<condition of the organ based on report>",
-    "medicalHistory": "<key medical history from report>",
-    "causeOfDonation": "<if mentioned in report>",
+    "organCondition": "<condition of the organ based on report or system data>",
+    "medicalHistory": "<key medical history from report or system data>",
+    "causeOfDonation": "<if mentioned>",
     "contraindications": "<any risk factors found>"
   },
   "recipientProfile": {
@@ -81,25 +105,24 @@ Analyze thoroughly and respond with ONLY this JSON, no markdown, no extra text:
     "gender": "<extracted or provided>",
     "bloodGroup": "<extracted or provided>",
     "diagnosis": "<primary diagnosis>",
-    "comorbidities": "<other conditions found in report>",
+    "comorbidities": "<other conditions found>",
     "currentMedications": "<if mentioned>",
     "urgency": "<urgency level and clinical justification>",
-    "waitingDuration": "<if mentioned in report>"
+    "waitingDuration": "<if mentioned>"
   },
   "compatibilityFactors": {
     "bloodGroupMatch": "<Compatible/Incompatible/Universal - explanation>",
     "organTypeMatch": "<Match/Mismatch - explanation>",
     "ageCompatibility": "<analysis of donor vs recipient age>",
-    "sizeCompatibility": "<if size data available>",
     "crossMatchRisk": "<Low/Medium/High - explanation>",
     "rejectionRisk": "<Low/Medium/High - reason>"
   },
   "keyInsights": ["<insight1>", "<insight2>", "<insight3>", "<insight4>", "<insight5>"],
   "riskFactors": ["<risk1>", "<risk2>", "<risk3>"],
   "preTransplantChecks": ["<check1>", "<check2>", "<check3>"],
-  "medicalSummary": "<3-4 sentence comprehensive clinical summary>",
+  "medicalSummary": "<3-4 sentence comprehensive clinical summary mentioning any document issues>",
   "recommendation": "<RECOMMEND|CAUTION|NOT_RECOMMENDED>",
-  "recommendationReason": "<detailed clinical justification for the recommendation>"
+  "recommendationReason": "<detailed clinical justification>"
 }`;
 
     const groq = getGroq();

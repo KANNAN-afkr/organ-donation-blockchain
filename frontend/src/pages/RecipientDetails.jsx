@@ -284,7 +284,29 @@ export default function RecipientDetails() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            {/* Document Status Warning */}
+            {(aiInsights.donorReportStatus || aiInsights.recipientReportStatus) && (
+              <div className="mb-4 space-y-2">
+                {aiInsights.donorReportStatus && aiInsights.donorReportStatus !== "Valid Medical Report" && (
+                  <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <span className="text-amber-500 text-base">⚠️</span>
+                    <div>
+                      <div className="text-xs font-semibold text-amber-800">Donor Document Issue</div>
+                      <div className="text-xs text-amber-700 mt-0.5">{aiInsights.donorReportStatus} — Analysis based on system records only</div>
+                    </div>
+                  </div>
+                )}
+                {aiInsights.recipientReportStatus && aiInsights.recipientReportStatus !== "Valid Medical Report" && (
+                  <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <span className="text-amber-500 text-base">⚠️</span>
+                    <div>
+                      <div className="text-xs font-semibold text-amber-800">Recipient Document Issue</div>
+                      <div className="text-xs text-amber-700 mt-0.5">{aiInsights.recipientReportStatus} — Analysis based on system records only</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
               <div className="bg-gray-50 rounded-lg p-3">
                 <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Blood Compatibility</div>
                 <div className="text-sm text-gray-700">{aiInsights.bloodCompatibility}</div>

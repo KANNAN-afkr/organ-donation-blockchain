@@ -156,6 +156,30 @@ export default function ApplicationReview() {
                     </button>
                   </div>
 
+                  {/* Document Status Warning */}
+                  {(selected.aiAnalysis.donorReportStatus || selected.aiAnalysis.recipientReportStatus) && (
+                    <div className="mb-4 space-y-2">
+                      {selected.aiAnalysis.donorReportStatus && selected.aiAnalysis.donorReportStatus !== "Valid Medical Report" && (
+                        <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                          <span className="text-amber-500">⚠️</span>
+                          <div>
+                            <div className="text-xs font-semibold text-amber-800">Donor Document Issue</div>
+                            <div className="text-xs text-amber-700 mt-0.5">{selected.aiAnalysis.donorReportStatus} — Analysis based on system records only</div>
+                          </div>
+                        </div>
+                      )}
+                      {selected.aiAnalysis.recipientReportStatus && selected.aiAnalysis.recipientReportStatus !== "Valid Medical Report" && (
+                        <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                          <span className="text-amber-500">⚠️</span>
+                          <div>
+                            <div className="text-xs font-semibold text-amber-800">Recipient Document Issue</div>
+                            <div className="text-xs text-amber-700 mt-0.5">{selected.aiAnalysis.recipientReportStatus} — Analysis based on system records only</div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Match Score */}
                   <div className="flex items-center gap-4 mb-5">
                     <div className={`text-3xl font-bold px-4 py-2 rounded-xl border ${scoreColor(selected.aiAnalysis.matchScore)}`}>
