@@ -57,7 +57,7 @@ export default function RecipientRegistration() {
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
           <h2 className="font-semibold text-gray-800 mb-5">Personal Details</h2>
           <form onSubmit={handleSave} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="form-label">Full Name</label>
                 <input value={form.name} onChange={(e) => setForm({...form, name: e.target.value})}
@@ -96,7 +96,7 @@ export default function RecipientRegistration() {
             <h2 className="font-semibold text-gray-800">Personal Details</h2>
             <button onClick={() => setEditing(true)} className="btn-secondary text-xs px-3 py-1.5">Edit</button>
           </div>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {[
               ["Full Name", profile.name],
               ["Father's Name", profile.fatherName],

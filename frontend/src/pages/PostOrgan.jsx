@@ -45,7 +45,7 @@ export default function PostOrgan() {
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 max-w-3xl">
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-5">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
             <label className="form-label">Organ Type</label>
             <select name="organType" value={form.organType} onChange={handleChange} className="form-input">

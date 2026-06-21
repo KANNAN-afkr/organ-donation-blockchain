@@ -52,9 +52,7 @@ export default function PostOrganRequest() {
               <span className="w-6 h-6 bg-emerald-600 text-white rounded-md flex items-center justify-center text-xs font-bold">1</span>
               <span className="text-sm font-semibold text-gray-700">Patient Details</span>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="form-label">Patient Name</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <input value={form.patientName} onChange={(e) => setForm({...form, patientName: e.target.value})}
                   required placeholder="John Doe" className="form-input" />
               </div>
@@ -93,9 +91,7 @@ export default function PostOrganRequest() {
               <span className="w-6 h-6 bg-emerald-600 text-white rounded-md flex items-center justify-center text-xs font-bold">2</span>
               <span className="text-sm font-semibold text-gray-700">Medical Need</span>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="form-label">Organ Needed</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <select value={form.organNeeded} onChange={(e) => setForm({...form, organNeeded: e.target.value})} className="form-input">
                   {ORGANS.map((o) => <option key={o}>{o}</option>)}
                 </select>

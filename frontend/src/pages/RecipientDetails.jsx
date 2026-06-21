@@ -126,7 +126,7 @@ export default function RecipientDetails() {
           </div>
 
           {/* Patient details */}
-          <div className="grid grid-cols-3 gap-4 mb-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-5">
             {[
               ["Age", req.patientAge],
               ["Gender", req.patientGender],
@@ -151,7 +151,7 @@ export default function RecipientDetails() {
           {/* Requesting Hospital full details */}
           <div className="border-t border-gray-100 pt-4 mb-4">
             <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Requesting Hospital</div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
                 ["Hospital Name", req.hospitalId?.name],
                 ["Address", req.hospitalId?.address],
@@ -211,9 +211,9 @@ export default function RecipientDetails() {
             <div className="space-y-3">
               {compatibleListings.map((listing) => (
                 <div key={listing._id} className="border border-gray-200 rounded-xl p-4">
-                  <div className="flex items-start justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
                         <span className="bg-emerald-100 text-emerald-700 text-sm font-semibold px-3 py-1 rounded-lg border border-emerald-200">
                           {listing.organType}
                         </span>
@@ -225,7 +225,7 @@ export default function RecipientDetails() {
                       <div className="text-xs text-gray-500">{listing.medicalCondition}</div>
                     </div>
 
-                    <div className="flex flex-col gap-2 ml-4 flex-shrink-0">
+                    <div className="flex flex-row sm:flex-col gap-2 sm:ml-4 flex-shrink-0">
                       {listing.reportFileId && (
                         <button
                           onClick={() => downloadPDF(listing.reportFileId, listing.reportFileName, "organ-listings/report")}
@@ -284,7 +284,7 @@ export default function RecipientDetails() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               <div className="bg-gray-50 rounded-lg p-3">
                 <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Blood Compatibility</div>
                 <div className="text-sm text-gray-700">{aiInsights.bloodCompatibility}</div>
@@ -347,7 +347,7 @@ export default function RecipientDetails() {
                 className="w-full px-6 py-4 text-left hover:bg-gray-50 transition-colors group">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
                       <span className="font-semibold text-gray-900">{req.patientName}</span>
                       <StatusBadge status={req.urgencyLevel} />
                       {hasCompatible && !alreadyAllocated && (
@@ -366,7 +366,7 @@ export default function RecipientDetails() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-gray-500">
                       <span>Needs: <span className="font-medium text-gray-700">{req.organNeeded}</span></span>
                       <span>Blood: <span className="font-medium text-gray-700">{req.bloodGroup}</span></span>
                       <span>Age: {req.patientAge}</span>

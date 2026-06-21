@@ -36,7 +36,7 @@ export default function DonorRegistration() {
           <p className="page-subtitle">Your organ donation registration details</p>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { label: "Approval Status",   value: <StatusBadge status={donor.isApproved ? "approved" : "pending"} /> },
             { label: "Allocation Status", value: <StatusBadge status={donor.isAllocated ? "confirmed" : "pending"} /> },
@@ -89,7 +89,7 @@ export default function DonorRegistration() {
           <p className="text-xs text-emerald-700">Upon registration, a blockchain transaction will be created on Ethereum to permanently record your donor commitment.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-5">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
             <label className="form-label">Full Name</label>
             <input name="name" value={form.name} onChange={handleChange} required placeholder="John Doe" className="form-input" />

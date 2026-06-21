@@ -103,8 +103,7 @@ export default function OrganAllocation() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
-        {stats.map((s) => (
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div key={s.label} className={`bg-white rounded-xl border border-gray-200 border-l-4 ${s.color} p-5 shadow-sm`}>
             <div className="text-2xl font-bold text-gray-900">{s.value}</div>
             <div className="text-sm text-gray-500 mt-1">{s.label}</div>
@@ -161,9 +160,7 @@ export default function OrganAllocation() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">
-        {[
-          { key: "suggestions", label: `Suggestions (${matches.length})` },
+      <div className="flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg"> label: `Suggestions (${matches.length})` },
           { key: "manual",      label: "Manual Allocation" },
           { key: "records",     label: `Records (${allocations.length})` },
         ].map((t) => (
@@ -185,9 +182,7 @@ export default function OrganAllocation() {
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { title: "Organ Type Match",       desc: "Donor organ must exactly match recipient's required organ" },
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">       desc: "Donor organ must exactly match recipient's required organ" },
               { title: "Blood Group Compatible", desc: "Based on universal donor-recipient blood compatibility rules" },
               { title: "Urgency Priority",       desc: "Critical > High > Medium > Low — most urgent recipient first" },
             ].map((c) => (
@@ -268,7 +263,7 @@ export default function OrganAllocation() {
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 max-w-3xl">
           <h3 className="font-semibold text-gray-800 mb-1">Manual Organ Allocation</h3>
           <p className="text-xs text-gray-400 mb-5">For cases where the doctor selects a specific donor-recipient pair outside of system suggestions.</p>
-          <form onSubmit={handleManualAllocate} className="grid grid-cols-2 gap-5">
+          <form onSubmit={handleManualAllocate} className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
               <label className="form-label">Select Donor</label>
               <select name="donorId" value={form.donorId} onChange={handleChange} className="form-input">

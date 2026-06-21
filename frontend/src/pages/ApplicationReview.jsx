@@ -77,7 +77,7 @@ export default function ApplicationReview() {
         <p className="page-subtitle">Review AI-analyzed organ applications. Approve or reject based on AI insights and your medical judgment.</p>
       </div>
 
-      <div className="grid grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Applications List */}
         <div className="col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-gray-100">
