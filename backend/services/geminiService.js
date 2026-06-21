@@ -1,8 +1,8 @@
 const Groq = require("groq-sdk");
 const mongoose = require("mongoose");
 const { GridFSBucket } = require("mongodb");
+const pdfParse = require("pdf-parse");
 
-// Lazily get Groq client so dotenv is always loaded first
 function getGroq() {
   return new Groq({ apiKey: process.env.GROQ_API_KEY });
 }
@@ -13,15 +13,15 @@ async function getPDFText(fileId) {
     const chunks = [];
     const stream = bucket.openDownloadStream(new mongoose.Types.ObjectId(fileId));
     stream.on("data", (chunk) => chunks.push(chunk));
-    stream.on("end", () => {
-      const buf = Buffer.concat(chunks);
-      // Extract readable ASCII text from PDF binary
-      const text = buf.toString("latin1")
-        .replace(/[^\x20-\x7E\n\r\t]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim()
-        .slice(0, 6000);
-      resolve(text);
+    stream.on("end", async () => {
+      try {
+        const buf = Buffer.concat(chunks);
+        const data = await pdfParse(buf);
+        const text = data.text.replace(/\s+/g, " ").trim().slice(0, 8000);
+        resolve(text);
+      } catch (e) {
+        resolve("");
+      }
     });
     stream.on("error", () => resolve(""));
   });
@@ -79,10 +79,13 @@ ${organReportText ? `DONOR MEDICAL REPORT (extracted text):\n${organReportText}\
 ${recipientReportText ? `RECIPIENT MEDICAL REPORT (extracted text):\n${recipientReportText}\n` : ""}
 
 IMPORTANT INSTRUCTIONS:
-- If a PDF was provided but unreadable or doesn't appear to be a medical report, clearly mention this in your analysis
-- If report text looks like a non-medical document (random text, invoices, images etc), flag it as "Invalid document — not a medical report"
-- Base your analysis primarily on the system record details provided above
-- Be honest about what data you have and what is missing
+- Read the full PDF text carefully like a doctor reading a medical report
+- Extract specific values like HbA1c, creatinine, eGFR, BP, medications, lab results, biopsy findings etc if present
+- If a PDF text does not look like a medical report (too short, random text, invoice, image-only), flag it clearly
+- Give rich, specific, clinically meaningful insights based on what you actually read from the reports
+- Do NOT give generic answers — be specific to the actual data in the reports
+- If report text looks like a non-medical document, flag it as "Invalid document — not a medical report"
+- Base analysis on system record details when PDF data is unavailable
 
 Analyze thoroughly and respond with ONLY this JSON, no markdown, no extra text:
 {
@@ -130,7 +133,7 @@ Analyze thoroughly and respond with ONLY this JSON, no markdown, no extra text:
       model: "llama-3.3-70b-versatile",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
-      max_tokens: 2048,
+      max_tokens: 3000,
     });
 
     const text = response.choices[0]?.message?.content?.trim();
