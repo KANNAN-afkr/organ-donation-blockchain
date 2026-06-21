@@ -39,7 +39,7 @@ async function analyzeMedicalReports(organListing, recipient) {
       try { recipientReportText = await getPDFText(recipient.reportFileId); } catch (e) { console.warn("[Groq] Recipient PDF read failed:", e.message); }
     }
 
-    const prompt = `You are a senior medical AI assistant helping doctors make organ transplant decisions.
+    const prompt = `You are a senior transplant surgeon and medical AI analyzing organ compatibility for a life-critical transplant decision.
 
 AVAILABLE ORGAN DETAILS:
 - Organ Type: ${organListing.organType}
@@ -59,17 +59,47 @@ RECIPIENT DETAILS:
 - Diagnosis: ${recipient.diagnosis}
 - Hospital: ${recipient.hospitalName || ""}
 
-${organReportText ? `DONOR MEDICAL REPORT:\n${organReportText}\n` : ""}
-${recipientReportText ? `RECIPIENT MEDICAL REPORT:\n${recipientReportText}\n` : ""}
+${organReportText ? `DONOR MEDICAL REPORT (extracted text):\n${organReportText}\n` : ""}
+${recipientReportText ? `RECIPIENT MEDICAL REPORT (extracted text):\n${recipientReportText}\n` : ""}
 
-Respond with ONLY this JSON, no markdown, no extra text:
+Analyze thoroughly and respond with ONLY this JSON, no markdown, no extra text:
 {
   "matchScore": <number 0-100>,
-  "bloodCompatibility": "<explanation>",
-  "organCompatibility": "<explanation>",
+  "bloodCompatibility": "<detailed blood group compatibility explanation>",
+  "organCompatibility": "<detailed organ type and size compatibility>",
+  "donorProfile": {
+    "age": "<extracted or provided>",
+    "gender": "<extracted or provided>",
+    "bloodGroup": "<extracted or provided>",
+    "organCondition": "<condition of the organ based on report>",
+    "medicalHistory": "<key medical history from report>",
+    "causeOfDonation": "<if mentioned in report>",
+    "contraindications": "<any risk factors found>"
+  },
+  "recipientProfile": {
+    "age": "<extracted or provided>",
+    "gender": "<extracted or provided>",
+    "bloodGroup": "<extracted or provided>",
+    "diagnosis": "<primary diagnosis>",
+    "comorbidities": "<other conditions found in report>",
+    "currentMedications": "<if mentioned>",
+    "urgency": "<urgency level and clinical justification>",
+    "waitingDuration": "<if mentioned in report>"
+  },
+  "compatibilityFactors": {
+    "bloodGroupMatch": "<Compatible/Incompatible/Universal - explanation>",
+    "organTypeMatch": "<Match/Mismatch - explanation>",
+    "ageCompatibility": "<analysis of donor vs recipient age>",
+    "sizeCompatibility": "<if size data available>",
+    "crossMatchRisk": "<Low/Medium/High - explanation>",
+    "rejectionRisk": "<Low/Medium/High - reason>"
+  },
   "keyInsights": ["<insight1>", "<insight2>", "<insight3>", "<insight4>", "<insight5>"],
-  "medicalSummary": "<2-3 sentence clinical summary>",
-  "recommendation": "<RECOMMEND|CAUTION|NOT_RECOMMENDED> - <reason>"
+  "riskFactors": ["<risk1>", "<risk2>", "<risk3>"],
+  "preTransplantChecks": ["<check1>", "<check2>", "<check3>"],
+  "medicalSummary": "<3-4 sentence comprehensive clinical summary>",
+  "recommendation": "<RECOMMEND|CAUTION|NOT_RECOMMENDED>",
+  "recommendationReason": "<detailed clinical justification for the recommendation>"
 }`;
 
     const groq = getGroq();
@@ -77,7 +107,7 @@ Respond with ONLY this JSON, no markdown, no extra text:
       model: "llama-3.3-70b-versatile",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
-      max_tokens: 1024,
+      max_tokens: 2048,
     });
 
     const text = response.choices[0]?.message?.content?.trim();

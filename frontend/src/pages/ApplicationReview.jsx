@@ -166,33 +166,97 @@ export default function ApplicationReview() {
                       <div className={`text-xs font-medium mt-1 px-2 py-1 rounded-md border inline-block ${recommendColor(selected.aiAnalysis.recommendation)}`}>
                         {selected.aiAnalysis.recommendation}
                       </div>
+                      {selected.aiAnalysis.recommendationReason && (
+                        <div className="text-xs text-gray-500 mt-1 max-w-xs">{selected.aiAnalysis.recommendationReason}</div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Compatibility */}
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Blood Compatibility</div>
-                      <div className="text-sm text-gray-700">{selected.aiAnalysis.bloodCompatibility}</div>
+                  {/* Donor & Recipient Profiles */}
+                  {(selected.aiAnalysis.donorProfile || selected.aiAnalysis.recipientProfile) && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                      {selected.aiAnalysis.donorProfile && (
+                        <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-3">
+                          <div className="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-2">Donor Profile</div>
+                          {Object.entries(selected.aiAnalysis.donorProfile).map(([k, v]) => v && v !== "—" && (
+                            <div key={k} className="text-xs mb-1">
+                              <span className="text-gray-500 capitalize">{k.replace(/([A-Z])/g, ' $1')}: </span>
+                              <span className="text-gray-800 font-medium">{v}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {selected.aiAnalysis.recipientProfile && (
+                        <div className="bg-blue-50 border border-blue-100 rounded-lg p-3">
+                          <div className="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-2">Recipient Profile</div>
+                          {Object.entries(selected.aiAnalysis.recipientProfile).map(([k, v]) => v && v !== "—" && (
+                            <div key={k} className="text-xs mb-1">
+                              <span className="text-gray-500 capitalize">{k.replace(/([A-Z])/g, ' $1')}: </span>
+                              <span className="text-gray-800 font-medium">{v}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Organ Compatibility</div>
-                      <div className="text-sm text-gray-700">{selected.aiAnalysis.organCompatibility}</div>
+                  )}
+
+                  {/* Compatibility Factors */}
+                  {selected.aiAnalysis.compatibilityFactors && (
+                    <div className="mb-4">
+                      <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Compatibility Factors</div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {Object.entries(selected.aiAnalysis.compatibilityFactors).map(([k, v]) => v && (
+                          <div key={k} className="bg-gray-50 rounded-lg p-2.5">
+                            <div className="text-xs text-gray-400 capitalize mb-0.5">{k.replace(/([A-Z])/g, ' $1')}</div>
+                            <div className="text-xs font-medium text-gray-800">{v}</div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Key Insights */}
                   <div className="mb-4">
-                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Key Insights from Medical Reports</div>
-                    <div className="space-y-2">
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Key Insights</div>
+                    <div className="space-y-1.5">
                       {selected.aiAnalysis.keyInsights?.map((insight, i) => (
-                        <div key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                          <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1.5 flex-shrink-0"></span>
+                        <div key={i} className="flex items-start gap-2 text-xs text-gray-700">
+                          <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 flex-shrink-0"></span>
                           {insight}
                         </div>
                       ))}
                     </div>
                   </div>
+
+                  {/* Risk Factors */}
+                  {selected.aiAnalysis.riskFactors?.length > 0 && (
+                    <div className="mb-4">
+                      <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Risk Factors</div>
+                      <div className="space-y-1.5">
+                        {selected.aiAnalysis.riskFactors.map((r, i) => (
+                          <div key={i} className="flex items-start gap-2 text-xs text-amber-700">
+                            <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1 flex-shrink-0"></span>
+                            {r}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Pre-Transplant Checks */}
+                  {selected.aiAnalysis.preTransplantChecks?.length > 0 && (
+                    <div className="mb-4">
+                      <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Pre-Transplant Checks Required</div>
+                      <div className="space-y-1.5">
+                        {selected.aiAnalysis.preTransplantChecks.map((c, i) => (
+                          <div key={i} className="flex items-start gap-2 text-xs text-blue-700">
+                            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 flex-shrink-0"></span>
+                            {c}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Medical Summary */}
                   <div className="bg-blue-50 border border-blue-100 rounded-lg p-3">
